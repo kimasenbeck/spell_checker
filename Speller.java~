@@ -1,0 +1,59 @@
+//Speller.java
+//Kim Asenbeck
+//Lab11
+//4-23-15
+
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+public class Speller {
+  
+  //Instance variables
+  public Vector<String> misspelled;
+  public Scanner scan;
+  public EnglishHashDictionary hash; 
+  public String file, dictionary;
+  
+//This class is the spell-checker.
+//don't need to handle punctuation
+  public Speller(String file, String dictionary){
+    hash = new EnglishHashDictionary(dictionary);//Create a new EnglishHashDictionary
+    this.file = file;
+    misspelled = new Vector<String>();
+  }
+  
+  public Vector checker(){//Check every word of a given text file against the dictionary
+    //Keep track of misspelled words in a list or array, vector, or some other data structure
+    //(ideally unique misspelled words) 
+    try{
+      scan = new Scanner(new File(file));
+      while(scan.hasNext()){
+        String s = scan.next();
+        System.out.println(s);
+        s = s.toLowerCase();//toLowerCase() returns lowercase version of same word.
+        s = s.trim();//trim(), gets rid of extra white space. ex)
+        boolean contains = hash.searchWord(s);
+        if (contains == false){
+          if (!(misspelled.contains(s))){
+            misspelled.add(s);
+          }
+        }
+      }
+    }
+    catch(IOException ex){}
+    return misspelled;
+  }
+  
+  public static void main (String[]args){
+    Speller spell = new Speller(args[0], args[1]);
+    Vector misspelled = spell.checker();
+    for (int i = 0; i < misspelled.size() ; i++){
+      System.out.println(misspelled.elementAt(i));
+    }
+  }
+  
+}
+
+//Example invocation (run from commmand line)
+//java Speller AllYouNeedIsLove.txt EnglishWords1.txt
